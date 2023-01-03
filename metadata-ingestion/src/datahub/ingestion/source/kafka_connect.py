@@ -957,7 +957,7 @@ class KafkaConnectSource(Source):
         for plugin in response.json():
             connector_class = plugin.get('class')
             connector_version = plugin.get('version')
-            result.update({connector_class, connector_version})
+            result.update({connector_class: connector_version})
 
         return result
 
