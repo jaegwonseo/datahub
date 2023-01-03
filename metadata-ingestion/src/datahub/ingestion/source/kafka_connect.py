@@ -623,7 +623,7 @@ class DebeziumSourceConnector:
     connector_manifest: ConnectorManifest
 
     def __init__(
-            self, connector_manifest: ConnectorManifest, config: KafkaConnectSourceConfig
+            self, connector_manifest: ConnectorManifest, config: KafkaConnectSourceConfig, version: str
     ) -> None:
         self.connector_manifest = connector_manifest
         self.config = config
@@ -946,7 +946,7 @@ class KafkaConnectSource(Source):
         config = KafkaConnectSourceConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
-    def get_plugin_version(self) -> Dict[str, str]:
+    def get_connector_version(self) -> Dict[str, str]:
         result = {}
 
         response = self.session.get(f"{self.config.connect_uri}/connector-plugins")
@@ -963,6 +963,8 @@ class KafkaConnectSource(Source):
 
         Enrich with lineages metadata.
         """
+        connector_version_dict = self.get_connector_version()
+
         connectors_manifest = list()
 
         connector_response = self.session.get(
@@ -1011,8 +1013,9 @@ class KafkaConnectSource(Source):
                 elif connector_manifest.config.get("connector.class", "").startswith(
                         "io.debezium.connector"
                 ):
+                    connector_version = connector_version_dict.get(connector_manifest.config.get("connector.class", ""))
                     connector_manifest = DebeziumSourceConnector(
-                        connector_manifest=connector_manifest, config=self.config
+                        connector_manifest=connector_manifest, config=self.config, version=connector_version
                     ).connector_manifest
                 elif (
                         connector_manifest.config.get("connector.class", "")
