@@ -644,8 +644,10 @@ class DebeziumSourceConnector:
         # debezium version convention : x.y.z.{Final, Alpha, Beta, CR}
         connector_version = '.'.join(i for i in self.version.split('.') if i.isdigit())
         if connector_version >= '2.0.0':
+            # https://debezium.io/documentation/reference/2.0/connectors/mysql.html#mysql-property-topic-prefix
             topic_prefix_config = 'topic.prefix'
         else:
+            # https://debezium.io/documentation/reference/1.9/connectors/mysql.html#mysql-property-database-server-name
             topic_prefix_config = 'database.server.name'
 
         if connector_class == "io.debezium.connector.mysql.MySqlConnector":
