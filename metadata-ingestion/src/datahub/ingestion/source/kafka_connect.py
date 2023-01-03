@@ -124,7 +124,7 @@ def remove_prefix(text: str, prefix: str) -> str:
 
 
 def unquote(
-    string: str, leading_quote: str = '"', trailing_quote: Optional[str] = None
+        string: str, leading_quote: str = '"', trailing_quote: Optional[str] = None
 ) -> str:
     """
     If string starts and ends with a quote, unquote it
@@ -136,9 +136,9 @@ def unquote(
 
 
 def get_dataset_name(
-    database_name: Optional[str],
-    instance_name: Optional[str],
-    source_table: str,
+        database_name: Optional[str],
+        instance_name: Optional[str],
+        source_table: str,
 ) -> str:
     if database_name and instance_name:
         dataset_name = instance_name + "." + database_name + "." + source_table
@@ -151,7 +151,7 @@ def get_dataset_name(
 
 
 def get_instance_name(
-    config: KafkaConnectSourceConfig, kafka_connector_name: str, source_platform: str
+        config: KafkaConnectSourceConfig, kafka_connector_name: str, source_platform: str
 ) -> Optional[str]:
     instance_name = None
     if config.connect_to_platform_map:
@@ -161,7 +161,7 @@ def get_instance_name(
                     source_platform
                 ]
                 if config.platform_instance_map and config.platform_instance_map.get(
-                    source_platform
+                        source_platform
                 ):
                     logger.error(
                         f"Same source platform {source_platform} configured in both platform_instance_map and connect_to_platform_map"
@@ -182,10 +182,10 @@ class ConfluentJDBCSourceConnector:
     report: KafkaConnectSourceReport
 
     def __init__(
-        self,
-        connector_manifest: ConnectorManifest,
-        config: KafkaConnectSourceConfig,
-        report: KafkaConnectSourceReport,
+            self,
+            connector_manifest: ConnectorManifest,
+            config: KafkaConnectSourceConfig,
+            report: KafkaConnectSourceReport,
     ) -> None:
         self.connector_manifest = connector_manifest
         self.config = config
@@ -242,16 +242,16 @@ class ConfluentJDBCSourceConnector:
         "TombstoneHandler",
     ]
     KNOWN_NONTOPICROUTING_TRANSFORMS = (
-        KAFKA_NONTOPICROUTING_TRANSFORMS
-        + [
-            "org.apache.kafka.connect.transforms.{}".format(t)
-            for t in KAFKA_NONTOPICROUTING_TRANSFORMS
-        ]
-        + CONFLUENT_NONTOPICROUTING_TRANSFORMS
-        + [
-            "io.confluent.connect.transforms.{}".format(t)
-            for t in CONFLUENT_NONTOPICROUTING_TRANSFORMS
-        ]
+            KAFKA_NONTOPICROUTING_TRANSFORMS
+            + [
+                "org.apache.kafka.connect.transforms.{}".format(t)
+                for t in KAFKA_NONTOPICROUTING_TRANSFORMS
+            ]
+            + CONFLUENT_NONTOPICROUTING_TRANSFORMS
+            + [
+                "io.confluent.connect.transforms.{}".format(t)
+                for t in CONFLUENT_NONTOPICROUTING_TRANSFORMS
+            ]
     )
 
     @dataclass
@@ -268,8 +268,8 @@ class ConfluentJDBCSourceConnector:
         self.report.report_warning(key, reason)
 
     def get_parser(
-        self,
-        connector_manifest: ConnectorManifest,
+            self,
+            connector_manifest: ConnectorManifest,
     ) -> JdbcParser:
         url = remove_prefix(
             str(connector_manifest.config.get("connection.url")), "jdbc:"
@@ -310,13 +310,13 @@ class ConfluentJDBCSourceConnector:
         )
 
     def default_get_lineages(
-        self,
-        topic_prefix: str,
-        database_name: str,
-        source_platform: str,
-        topic_names: Optional[Iterable[str]] = None,
-        include_source_dataset: bool = True,
-        instance_name: Optional[str] = None,
+            self,
+            topic_prefix: str,
+            database_name: str,
+            source_platform: str,
+            topic_names: Optional[Iterable[str]] = None,
+            include_source_dataset: bool = True,
+            instance_name: Optional[str] = None,
     ) -> List[KafkaConnectLineage]:
         lineages: List[KafkaConnectLineage] = []
         if not topic_names:
@@ -372,10 +372,10 @@ class ConfluentJDBCSourceConnector:
                 "quote.sql.identifiers", "always"
             )
             if (
-                quote_method == "always"
-                and table_ids
-                and table_ids[0]
-                and table_ids[-1]
+                    quote_method == "always"
+                    and table_ids
+                    and table_ids[0]
+                    and table_ids[-1]
             ):
                 leading_quote_char = table_ids[0][0]
                 trailing_quote_char = table_ids[-1][-1]
@@ -563,7 +563,7 @@ class MongoSourceConnector:
     connector_manifest: ConnectorManifest
 
     def __init__(
-        self, connector_manifest: ConnectorManifest, config: KafkaConnectSourceConfig
+            self, connector_manifest: ConnectorManifest, config: KafkaConnectSourceConfig
     ) -> None:
         self.connector_manifest = connector_manifest
         self.config = config
@@ -578,8 +578,8 @@ class MongoSourceConnector:
         transforms: List[str]
 
     def get_parser(
-        self,
-        connector_manifest: ConnectorManifest,
+            self,
+            connector_manifest: ConnectorManifest,
     ) -> MongoSourceParser:
         parser = self.MongoSourceParser(
             db_connection_url=connector_manifest.config.get("connection.uri"),
@@ -623,7 +623,7 @@ class DebeziumSourceConnector:
     connector_manifest: ConnectorManifest
 
     def __init__(
-        self, connector_manifest: ConnectorManifest, config: KafkaConnectSourceConfig
+            self, connector_manifest: ConnectorManifest, config: KafkaConnectSourceConfig
     ) -> None:
         self.connector_manifest = connector_manifest
         self.config = config
@@ -636,8 +636,8 @@ class DebeziumSourceConnector:
         database_name: Optional[str]
 
     def get_parser(
-        self,
-        connector_manifest: ConnectorManifest,
+            self,
+            connector_manifest: ConnectorManifest,
     ) -> DebeziumParser:
         connector_class = connector_manifest.config.get("connector.class", "")
         if connector_class == "io.debezium.connector.mysql.MySqlConnector":
@@ -739,7 +739,7 @@ class BigQuerySinkConnector:
     report: KafkaConnectSourceReport
 
     def __init__(
-        self, connector_manifest: ConnectorManifest, report: KafkaConnectSourceReport
+            self, connector_manifest: ConnectorManifest, report: KafkaConnectSourceReport
     ) -> None:
         self.connector_manifest = connector_manifest
         self.report = report
@@ -760,8 +760,8 @@ class BigQuerySinkConnector:
         self.report.report_warning(key, reason)
 
     def get_parser(
-        self,
-        connector_manifest: ConnectorManifest,
+            self,
+            connector_manifest: ConnectorManifest,
     ) -> BQParser:
         project = connector_manifest.config["project"]
         sanitizeTopics = connector_manifest.config.get("sanitizeTopics", "false")
@@ -812,7 +812,7 @@ class BigQuerySinkConnector:
         return table_name
 
     def get_dataset_table_for_topic(
-        self, topic: str, parser: BQParser
+            self, topic: str, parser: BQParser
     ) -> Optional[str]:
         if parser.version == "v2":
             dataset = parser.defaultDataset
@@ -881,7 +881,7 @@ class BigQuerySinkConnector:
 
 
 def transform_connector_config(
-    connector_config: Dict, provided_configs: List[ProvidedConfig]
+        connector_config: Dict, provided_configs: List[ProvidedConfig]
 ) -> None:
     """This method will update provided configs in connector config values, if any"""
     lookupsByProvider = {}
@@ -946,6 +946,18 @@ class KafkaConnectSource(Source):
         config = KafkaConnectSourceConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
+    def get_plugin_version(self) -> Dict[str, str]:
+        result = {}
+
+        response = self.session.get(f"{self.config.connect_uri}/connector-plugins")
+
+        for plugin in response.json():
+            connector_class = plugin.get('class')
+            connector_version = plugin.get('version')
+            result.update({connector_class, connector_version})
+
+        return result
+
     def get_connectors_manifest(self) -> List[ConnectorManifest]:
         """Get Kafka Connect connectors manifest using REST API.
 
@@ -989,7 +1001,7 @@ class KafkaConnectSource(Source):
 
                 # JDBC source connector lineages
                 if connector_manifest.config.get("connector.class").__eq__(
-                    "io.confluent.connect.jdbc.JdbcSourceConnector"
+                        "io.confluent.connect.jdbc.JdbcSourceConnector"
                 ):
                     connector_manifest = ConfluentJDBCSourceConnector(
                         connector_manifest=connector_manifest,
@@ -997,14 +1009,14 @@ class KafkaConnectSource(Source):
                         report=self.report,
                     ).connector_manifest
                 elif connector_manifest.config.get("connector.class", "").startswith(
-                    "io.debezium.connector"
+                        "io.debezium.connector"
                 ):
                     connector_manifest = DebeziumSourceConnector(
                         connector_manifest=connector_manifest, config=self.config
                     ).connector_manifest
                 elif (
-                    connector_manifest.config.get("connector.class", "")
-                    == "com.mongodb.kafka.connect.MongoSourceConnector"
+                        connector_manifest.config.get("connector.class", "")
+                        == "com.mongodb.kafka.connect.MongoSourceConnector"
                 ):
                     connector_manifest = MongoSourceConnector(
                         connector_manifest=connector_manifest, config=self.config
@@ -1034,7 +1046,7 @@ class KafkaConnectSource(Source):
 
             if connector_manifest.type == "sink":
                 if connector_manifest.config.get("connector.class").__eq__(
-                    "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector"
+                        "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector"
                 ):
                     connector_manifest = BigQuerySinkConnector(
                         connector_manifest=connector_manifest, report=self.report
@@ -1051,7 +1063,7 @@ class KafkaConnectSource(Source):
         return connectors_manifest
 
     def construct_flow_workunit(
-        self, connector: ConnectorManifest
+            self, connector: ConnectorManifest
     ) -> Iterable[MetadataWorkUnit]:
         connector_name = connector.name
         connector_type = connector.type
@@ -1080,7 +1092,7 @@ class KafkaConnectSource(Source):
             yield wu
 
     def construct_job_workunits(
-        self, connector: ConnectorManifest
+            self, connector: ConnectorManifest
     ) -> Iterable[MetadataWorkUnit]:
         connector_name = connector.name
         flow_urn = builder.make_data_flow_urn(
@@ -1168,7 +1180,7 @@ class KafkaConnectSource(Source):
                 yield wu
 
     def construct_lineage_workunits(
-        self, connector: ConnectorManifest
+            self, connector: ConnectorManifest
     ) -> Iterable[MetadataWorkUnit]:
         lineages = connector.lineages
         if lineages:
