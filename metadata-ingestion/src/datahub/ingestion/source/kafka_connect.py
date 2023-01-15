@@ -147,7 +147,7 @@ def get_dataset_name(
     else:
         dataset_name = source_table
 
-    return dataset_name
+    return dataset_name.lower()
 
 
 def get_instance_name(
