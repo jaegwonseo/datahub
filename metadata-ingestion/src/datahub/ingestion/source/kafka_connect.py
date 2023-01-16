@@ -872,7 +872,7 @@ class BigQuerySinkConnector:
                 KafkaConnectLineage(
                     source_dataset=topic,
                     source_platform="kafka",
-                    target_dataset=target_dataset,
+                    target_dataset=target_dataset.lower(),
                     target_platform=target_platform,
                 )
             )
