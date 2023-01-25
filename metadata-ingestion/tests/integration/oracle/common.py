@@ -44,8 +44,8 @@ class OracleTestCaseBase:
         self,
         pytestconfig: pytest.Config,
         tmp_path: pathlib.Path,
-        golden_file_name: str = "golden_test_ingest.json",
-        output_file_name: str = "oracle_mce_output.json",
+        golden_file_name: str = "",
+        output_file_name: str = "",
     ):
         self.pytestconfig = pytestconfig
         self.tmp_path = tmp_path
