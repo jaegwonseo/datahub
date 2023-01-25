@@ -65,6 +65,9 @@ class OracleConfig(BasicSQLAlchemyConfig):
     database: Optional[str] = Field(
         default=None, description="If using, omit `service_name`."
     )
+    add_database_name_to_urn: Optional[bool] = Field(
+        default=False, description="Add oracle database name to urn, default urn is schema.table"
+    )
 
     @pydantic.validator("service_name")
     def check_service_name(cls, v, values):
