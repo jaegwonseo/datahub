@@ -84,15 +84,17 @@ class OracleConfig(BasicSQLAlchemyConfig):
             url = f"{url}/?service_name={self.service_name}"
         return url
 
-    def get_identifier(self: BasicSQLAlchemyConfig, schema: str, table: str) -> str:
-        # schema, table is already normalized, we just to normalize database
+    def get_identifier(self, schema: str, table: str) -> str:
         regular = f"{schema}.{table}"
-        if self.database_alias:
-            return f"{self.database_alias.lower()}.{regular}"
-        if self.database:
-            return f"{self.database.lower()}.{regular}"
-        return regular
 
+        if not self.add_database_name_to_urn:
+            if self.database_alias:
+                return f"{self.database_alias.lower()}.{regular}"
+            if self.database:
+                return f"{self.database.lower()}.{regular}"
+            return regular
+        else:
+            return regular
 
 class OracleInspectorObjectWrapper:
     """
@@ -116,7 +118,7 @@ class OracleInspectorObjectWrapper:
         ]
 
     def get_table_names(
-        self, schema: Optional[str] = None, order_by: Optional[str] = None
+            self, schema: Optional[str] = None, order_by: Optional[str] = None
     ) -> List[str]:
         """
         skip order_by, we are not using order_by
@@ -188,8 +190,8 @@ class OracleSource(SQLAlchemySource):
 
     def get_workunits(self):
         with patch.dict(
-            "sqlalchemy.dialects.oracle.base.OracleDialect.ischema_names",
-            {klass.__name__: klass for klass in extra_oracle_types},
-            clear=False,
+                "sqlalchemy.dialects.oracle.base.OracleDialect.ischema_names",
+                {klass.__name__: klass for klass in extra_oracle_types},
+                clear=False,
         ):
             return super().get_workunits()
