@@ -61,7 +61,7 @@
     "changeType": "UPSERT",
     "aspectName": "containerProperties",
     "aspect": {
-        "value": "{\"customProperties\": {\"platform\": \"oracle\", \"instance\": \"PROD\", \"database\": \"oradoc\", \"schema\": \"schema1\"}, \"name\": \"schema1\"}",
+        "value": "{\"customProperties\": {\"platform\": \"oracle\", \"instance\": \"PROD\", \"database\": \"oradoc\", \"schema\": \"schema1\", \"add_database_name_to_urn\": \"False\"}, \"name\": \"schema1\"}",
         "contentType": "application/json"
     },
     "systemMetadata": {
