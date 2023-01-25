@@ -88,9 +88,9 @@ class OracleConfig(BasicSQLAlchemyConfig):
         regular = f"{schema}.{table}"
         if self.add_database_name_to_urn:
             if self.database_alias:
-                return f"{self.database_alias.lower()}.{regular}"
+                return f"{self.database_alias}.{regular}"
             if self.database:
-                return f"{self.database.lower()}.{regular}"
+                return f"{self.database}.{regular}"
             return regular
         else:
             return regular
