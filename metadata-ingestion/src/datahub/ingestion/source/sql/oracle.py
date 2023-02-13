@@ -89,12 +89,12 @@ class OracleConfig(BasicSQLAlchemyConfig):
         regular = f"{schema}.{table}"
         if self.add_database_name_to_urn:
             if self.database_alias:
-                return f"{self.database_alias}.{regular}"
+                return f"{self.database_alias}.{regular}".lower()
             if self.database:
-                return f"{self.database}.{regular}"
-            return regular
+                return f"{self.database}.{regular}".lower()
+            return regular.lower()
         else:
-            return regular
+            return regular.lower()
 
 
 class OracleInspectorObjectWrapper:
