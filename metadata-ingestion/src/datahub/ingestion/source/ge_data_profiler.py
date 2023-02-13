@@ -553,8 +553,8 @@ class _SingleDatasetProfiler(BasicDatasetProfilerBase):
                 column_spec = _SingleColumnSpec(column, column_profile)
                 columns_profiling_queue.append(column_spec)
 
-                self._get_column_type(column_spec, column)
-                self._get_column_cardinality(column_spec, column)
+                # self._get_column_type(column_spec, column)
+                # self._get_column_cardinality(column_spec, column)
 
         logger.debug(f"profiling {self.dataset_name}: flushing stage 2 queries")
         self.query_combiner.flush()
@@ -570,95 +570,95 @@ class _SingleDatasetProfiler(BasicDatasetProfilerBase):
 
             non_null_count = column_spec.nonnull_count
             unique_count = column_spec.unique_count
-
-            if non_null_count is not None:
-                null_count = max(0, row_count - non_null_count)
-
-                if self.config.include_field_null_count:
-                    column_profile.nullCount = null_count
-                    if row_count > 0:
-                        # Sometimes this value is bigger than 1 because of the approx queries
-                        column_profile.nullProportion = min(1, null_count / row_count)
-
-            if unique_count is not None:
-                if self.config.include_field_distinct_count:
-                    column_profile.uniqueCount = unique_count
-                    if non_null_count is not None and non_null_count > 0:
-                        # Sometimes this value is bigger than 1 because of the approx queries
-                        column_profile.uniqueProportion = min(
-                            1, unique_count / non_null_count
-                        )
+            #
+            # if non_null_count is not None:
+            #     null_count = max(0, row_count - non_null_count)
+            #
+            #     if self.config.include_field_null_count:
+            #         column_profile.nullCount = null_count
+            #         if row_count > 0:
+            #             # Sometimes this value is bigger than 1 because of the approx queries
+            #             column_profile.nullProportion = min(1, null_count / row_count)
+            #
+            # if unique_count is not None:
+            #     if self.config.include_field_distinct_count:
+            #         column_profile.uniqueCount = unique_count
+            #         if non_null_count is not None and non_null_count > 0:
+            #             # Sometimes this value is bigger than 1 because of the approx queries
+            #             column_profile.uniqueProportion = min(
+            #                 1, unique_count / non_null_count
+            #             )
 
             self._get_dataset_column_sample_values(column_profile, column)
-
-            if (
-                type_ == ProfilerDataType.INT
-                or type_ == ProfilerDataType.FLOAT
-                or type_ == ProfilerDataType.NUMERIC
-            ):
-                self._get_dataset_column_min(column_profile, column)
-                self._get_dataset_column_max(column_profile, column)
-                self._get_dataset_column_mean(column_profile, column)
-                self._get_dataset_column_median(column_profile, column)
-                self._get_dataset_column_stdev(column_profile, column)
-
-                if cardinality in [
-                    Cardinality.ONE,
-                    Cardinality.TWO,
-                    Cardinality.VERY_FEW,
-                ]:
-                    self._get_dataset_column_distinct_value_frequencies(
-                        column_profile,
-                        column,
-                    )
-                if cardinality in {
-                    Cardinality.FEW,
-                    Cardinality.MANY,
-                    Cardinality.VERY_MANY,
-                }:
-                    self._get_dataset_column_quantiles(column_profile, column)
-                    self._get_dataset_column_histogram(column_profile, column)
-
-            elif type_ == ProfilerDataType.STRING:
-                if cardinality in [
-                    Cardinality.ONE,
-                    Cardinality.TWO,
-                    Cardinality.VERY_FEW,
-                    Cardinality.FEW,
-                ]:
-                    self._get_dataset_column_distinct_value_frequencies(
-                        column_profile,
-                        column,
-                    )
-
-            elif type_ == ProfilerDataType.DATETIME:
-                self._get_dataset_column_min(column_profile, column)
-                self._get_dataset_column_max(column_profile, column)
-
-                # FIXME: Re-add histogram once kl_divergence has been modified to support datetimes
-
-                if cardinality in [
-                    Cardinality.ONE,
-                    Cardinality.TWO,
-                    Cardinality.VERY_FEW,
-                    Cardinality.FEW,
-                ]:
-                    self._get_dataset_column_distinct_value_frequencies(
-                        column_profile,
-                        column,
-                    )
-
-            else:
-                if cardinality in [
-                    Cardinality.ONE,
-                    Cardinality.TWO,
-                    Cardinality.VERY_FEW,
-                    Cardinality.FEW,
-                ]:
-                    self._get_dataset_column_distinct_value_frequencies(
-                        column_profile,
-                        column,
-                    )
+            #
+            # if (
+            #     type_ == ProfilerDataType.INT
+            #     or type_ == ProfilerDataType.FLOAT
+            #     or type_ == ProfilerDataType.NUMERIC
+            # ):
+            #     self._get_dataset_column_min(column_profile, column)
+            #     self._get_dataset_column_max(column_profile, column)
+            #     self._get_dataset_column_mean(column_profile, column)
+            #     self._get_dataset_column_median(column_profile, column)
+            #     self._get_dataset_column_stdev(column_profile, column)
+            #
+            #     if cardinality in [
+            #         Cardinality.ONE,
+            #         Cardinality.TWO,
+            #         Cardinality.VERY_FEW,
+            #     ]:
+            #         self._get_dataset_column_distinct_value_frequencies(
+            #             column_profile,
+            #             column,
+            #         )
+            #     if cardinality in {
+            #         Cardinality.FEW,
+            #         Cardinality.MANY,
+            #         Cardinality.VERY_MANY,
+            #     }:
+            #         self._get_dataset_column_quantiles(column_profile, column)
+            #         self._get_dataset_column_histogram(column_profile, column)
+            #
+            # elif type_ == ProfilerDataType.STRING:
+            #     if cardinality in [
+            #         Cardinality.ONE,
+            #         Cardinality.TWO,
+            #         Cardinality.VERY_FEW,
+            #         Cardinality.FEW,
+            #     ]:
+            #         self._get_dataset_column_distinct_value_frequencies(
+            #             column_profile,
+            #             column,
+            #         )
+            #
+            # elif type_ == ProfilerDataType.DATETIME:
+            #     self._get_dataset_column_min(column_profile, column)
+            #     self._get_dataset_column_max(column_profile, column)
+            #
+            #     # FIXME: Re-add histogram once kl_divergence has been modified to support datetimes
+            #
+            #     if cardinality in [
+            #         Cardinality.ONE,
+            #         Cardinality.TWO,
+            #         Cardinality.VERY_FEW,
+            #         Cardinality.FEW,
+            #     ]:
+            #         self._get_dataset_column_distinct_value_frequencies(
+            #             column_profile,
+            #             column,
+            #         )
+            #
+            # else:
+            #     if cardinality in [
+            #         Cardinality.ONE,
+            #         Cardinality.TWO,
+            #         Cardinality.VERY_FEW,
+            #         Cardinality.FEW,
+            #     ]:
+            #         self._get_dataset_column_distinct_value_frequencies(
+            #             column_profile,
+            #             column,
+            #         )
 
         logger.debug(f"profiling {self.dataset_name}: flushing stage 3 queries")
         self.query_combiner.flush()
