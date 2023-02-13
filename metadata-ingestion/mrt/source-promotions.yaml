@@ -1,0 +1,25 @@
+sink:
+  type: datahub-rest
+  config:
+    server: 'http://datahub-datahub-gms:8080'
+    token: eyJhbGciOiJIUzI1NiJ9.eyJhY3RvclR5cGUiOiJVU0VSIiwiYWN0b3JJZCI6ImphZWd3b24uc2VvQG15cmVhbHRyaXAuY29tIiwidHlwZSI6IlBFUlNPTkFMIiwidmVyc2lvbiI6IjIiLCJqdGkiOiJmMmMyMTZmNy1mY2RkLTRlODYtYmNhMC0wMGQ5ZDYxNjljZDYiLCJzdWIiOiJqYWVnd29uLnNlb0BteXJlYWx0cmlwLmNvbSIsImlzcyI6ImRhdGFodWItbWV0YWRhdGEtc2VydmljZSJ9.NoAG1wshgJsqM6x6wMesAfa4ytw6ZA0KicNatuAqzCs
+source:
+  type: mysql
+  config:
+    include_tables: true
+    table_pattern:
+      allow:
+        - promotions
+    database: promotions
+    password:
+    host_port: promotions-prod.cluster-cyk5pq4nt7f3.ap-northeast-2.rds.amazonaws.com
+    include_views: true
+    schema_pattern:
+      allow:
+        - promotions
+    username: DPCDC
+    profiling:
+      enabled: true
+      include_field_sample_values: true
+      include_field_null_count: false
+      max_workers: 2
